@@ -1,0 +1,1 @@
+Put here all icons to be installed.

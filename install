@@ -1,0 +1,75 @@
+#!/bin/bash
+
+#UPDATE SISTEM
+sudo apt update && sudo apt upgrade
+
+#INSTALL MANUAL DOWNLOAD PACKAGES
+sudo dpkg -i DEBS/*.deb
+
+#INSTALL DEPENDENCIES IF ANY .DEB FAILS
+sudo apt install -f
+
+#INSTALL THEMES AND ICONS
+mkdir $HOME/.themes
+mkdir $HOME/.icons
+cp -r ICONS/* $HOME/.icons
+cp -r THEMES/* $HOME/.themes
+
+#INSTALL MY SCRIPTS BINARIES
+sudo cp BINS/* /usr/local/bin/
+sudo chmod +x /usr/local/bin/*
+
+#PYTHON DEPENDENCIES
+sudo apt install python2-dev python2-pip python3-dev python3-pip python-tk python3-tk
+sudo pip3 install numpy pandas matplotlib tensorflow bigml matplotlib RPI.GPIO adafruit-blinka adafruit-io
+
+#WINDOWS COMPATIBILITY
+sudo apt-get install playonlinux samba winbind exfat-fuse exfat-utils msttcorefonts
+
+#LIBREOFFICE
+sudo apt-get install libreoffice libreoffice-style-sifr
+sudo fc-cache -fV
+sudo apt-get install libreoffice-l10n-es
+sudo apt-get install myspell-es
+
+#JAVA VERSION 13 ORACLE
+sudo add-apt-repository ppa:linuxuprising/java
+sudo apt-get install oracle-java13-installer
+
+#TOOLS
+sudo apt-get install network-manager-vpnc network-manager-vpnc-gnome htop net-tools tmux clusterssh
+sudo apt-get install p7zip-full steam p7zip-rar unrar rar filezilla remmina remmina-plugin-vnc virtualbox virtualbox-ext-pack gnome-calendar openssl vlc gimp kdenlive transmission telegram-cli gparted
+sudo apt install apt-transport-https ca-certificates curl software-properties-common arduino*
+
+#OBS
+sudo apt-get install ffmpeg obs-studio
+
+#SNAPS
+sudo snap install whatsdesk telegram-cli spotify
+
+#DOCKER
+sudo apt install apt-transport-https ca-certificates curl software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
+sudo apt install docker-ce
+distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
+curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | sudo apt-key add -
+curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.list | sudo tee /etc/apt/sources.list.d/nvidia-docker.list
+sudo apt-get update && sudo apt-get install -y nvidia-container-toolkit
+sudo systemctl restart docker
+docker pull tensorflow/tensorflow:nightly-gpu-jupyter
+sudo usermod -aG docker ${USER}
+su - ${USER}
+sudo usermod -aG docker ${USER}
+
+#DUALBOOT CLOCK FIX
+timedatectl set-local-rtc 1 --adjust-system-clock
+
+#KVM for android studio
+sudo apt-get install qemu-kvm libvirt-bin ubuntu-vm-builder bridge-utils
+
+#GNOME TWEAKS
+sudo apt install gnome-shell-extensions gnome-tweak-tool chrome-gnome-shell
+while read line; do gnome-extensions install $line; done < gnome-extensions.txt
+sudo mv /usr/share/gnome-shell/extensions/ubuntu-dock@ubuntu.com ~/.local/share/gnome-shell/extensions
+sudo chown -R $USER:$USER ~/.local/share/gnome-shell/extensions/ubuntu-dock@ubuntu.com
